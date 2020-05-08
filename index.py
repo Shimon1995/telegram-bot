@@ -43,22 +43,25 @@ def switchMessage(message):
         sendMessage('Enter a todo content')
         message = getNewMsg(message)
         addToDo(message)
+        listToDos()
 
     elif message == '/dotodo':
         sendMessage('Pick a todo')
         todo_content = getNewMsg(message)
         getDoneToDo(todo_content)
+        listToDos()
 
     elif message == '/undododo':
         sendMessage('Pick a todo')
         todo_content = getNewMsg(message)
         getUndoneToDo(todo_content)
+        listToDos()
 
     elif message == '/removedodo':
         sendMessage('Pick a todo')
         message = getNewMsg(message)
         removeToDo(message)
-        print(todos)
+        listToDos()
 
     elif message == '/listtodos':
         listToDos()
