@@ -23,7 +23,9 @@ def getNewMsg(old_msg):
         time.sleep(1)
 
 
-def sendMessage(text, chat_id=685763684):
+def sendMessage(text):
+    last_msg = getLastMsg()
+    chat_id = last_msg['message']['from']['id']
     requests.get(
         URL + f'sendMessage?chat_id={chat_id}&text={text}&parse_mode=HTML')
 
