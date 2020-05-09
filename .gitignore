@@ -1,4 +1,5 @@
 .vscode/
-__pycache>__/
+/__pycache>__/
+partials/__pycache__/
 
 dotenv*
