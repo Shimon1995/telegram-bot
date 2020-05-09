@@ -10,6 +10,8 @@ URL = f'https://api.telegram.org/bot{TOKEN}/'
 def getLastMsg():
     res = requests.get(URL + 'getUpdates')
     result = res.json()
+    if result == None:
+        return 0
     result = result['result']
     return result[-1]
 
