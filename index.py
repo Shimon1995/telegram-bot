@@ -1,18 +1,15 @@
 import requests
 import time
 from dotenv import TOKEN
+from pymongo import MongoClient
 
 URL = f'https://api.telegram.org/bot{TOKEN}/'
 
 
-todos = [{
-    'content': 'Something something something something',
-    'done': False,
-},
-    {
-    'content': 'Something else',
-    'done': True,
-}]
+client = MongoClient('localhost', 27017)
+
+collection = client['todo']['todo']
+
 
 # Messages
 
@@ -57,7 +54,7 @@ def switchMessage(message):
         getUndoneToDo(todo_content)
         listToDos()
 
-    elif message == '/removedodo':
+    elif message == '/removetodo':
         sendMessage('Pick a todo')
         message = getNewMsg(message)
         removeToDo(message)
@@ -66,49 +63,63 @@ def switchMessage(message):
     elif message == '/listtodos':
         listToDos()
 
-    # else:
-    #     sendMessage('IDK, what you wnat from me')
 
 # Managing ToDos
 
+def trying(content):
+    try:
+        content = int(content)
+    except:
+        content = content
+
 
 def addToDo(content):
+    todos = []
+    for todo in collection.find({}):
+        todos.append(todo)
+    index = todos[-1]['id'] + 1
     todo = {
+        'id': index,
         'content': content,
         'done': False,
     }
-    todos.append(todo)
+    collection.insert_one(todo)
 
 
 def getDoneToDo(content):
-    for todo in todos:
-        if todo['content'] == content:
-            todo['done'] = True
+    trying(content)
+    collection.update_one({'$or': [{'id': content}, {'content': content}]}, {
+                          '$set': {'done': True}})
 
 
 def getUndoneToDo(content):
-    for todo in todos:
-        if todo['content'] == content:
-            todo['done'] = False
+    trying(content)
+    collection.update_one({'$or': [{'id': content}, {'content': content}]}, {
+                          '$set': {'done': False}})
 
 
 def removeToDo(content):
-    for todo in todos:
-        if todo['content'] == content:
-            todos.remove(todo)
+    collection.delete_one({'$or': [{'content': content}, {'id': content}]})
 
 
 def listToDos():
     message = ''
-    for todo in todos:
+    for todo in collection.find({}):
         done = 'has been done' if todo['done'] == True else 'undone yet'
-        message += f"<code>{todo['content']}</code> | <i>{done}</i>;\n"
+        message += f"{todo['id']}) <code>{todo['content']}</code> | <i>{done}</i>;\n"
     sendMessage(message)
 
 # partials
 
 
+def resetIds():
+    number = 1
+    for todo in collection.find({}):
+        collection.update_one(todo, {'$set': {'id': number}})
+        number += 1
+
 # Main
+
 
 def main(last):
     while True:
