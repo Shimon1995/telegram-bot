@@ -2,10 +2,7 @@ from partials import messages, partials
 
 
 def trying(content):
-    try:
-        content = int(content)
-    except:
-        content = content
+    return int(content)
 
 
 def addToDo(content):
@@ -21,21 +18,31 @@ def addToDo(content):
     partials.collection.insert_one(todo)
 
 
+def editToDo(content):
+    messages.sendMessage('Pick a new content')
+    new_content = messages.getNewMsg(content)
+    content = trying(content)
+    partials.collection.update_one({'$or': [{'id': content}, {'content': content}]}, {
+        '$set': {'content': new_content}})
+
+
 def getDoneToDo(content):
-    trying(content)
+    content = trying(content)
     partials.collection.update_one({'$or': [{'id': content}, {'content': content}]}, {
         '$set': {'done': True}})
 
 
 def getUndoneToDo(content):
-    trying(content)
+    content = trying(content)
     partials.collection.update_one({'$or': [{'id': content}, {'content': content}]}, {
         '$set': {'done': False}})
 
 
 def removeToDo(content):
+    content = trying(content)
     partials.collection.delete_one(
         {'$or': [{'content': content}, {'id': content}]})
+    partials.resetIds()
 
 
 def listToDos():

@@ -9,7 +9,7 @@ def main(last):
         if last != result:
             last = result
             messages.switchMessage(result['message']['text'])
-        time.sleep(1)
+        time.sleep(5)
 
 
 main('')

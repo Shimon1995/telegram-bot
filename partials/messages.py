@@ -27,7 +27,7 @@ def sendMessage(text):
     last_msg = getLastMsg()
     chat_id = last_msg['message']['from']['id']
     requests.get(
-        URL + f'sendMessage?chat_id={chat_id}&text={text}&parse_mode=HTML')
+        URL + f'sendMessage?chat_id={chat_id}&text={text}&parse_mode=HTML&offset=100')
 
 
 def switchMessage(message):
@@ -41,6 +41,12 @@ def switchMessage(message):
         sendMessage('Pick a todo')
         todo_content = getNewMsg(message)
         todos.getDoneToDo(todo_content)
+        todos.listToDos()
+
+    elif message == '/edittodo':
+        sendMessage('Pick a todo')
+        message = getNewMsg(message)
+        todos.editToDo(message)
         todos.listToDos()
 
     elif message == '/undododo':
