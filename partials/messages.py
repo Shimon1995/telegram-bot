@@ -1,7 +1,7 @@
 import requests
 import time
 from partials import todos
-from dotenv import TOKEN
+from environment import TOKEN
 
 
 URL = f'https://api.telegram.org/bot{TOKEN}/'
@@ -29,7 +29,12 @@ def sendMessage(text):
     last_msg = getLastMsg()
     chat_id = last_msg['message']['from']['id']
     requests.get(
-        URL + f'sendMessage?chat_id={chat_id}&text={text}&parse_mode=HTML&offset=100')
+        URL + f'sendMessage', params={
+            'chat_id': chat_id,
+            'text': text,
+            'parse_mode': 'HTML',
+            'offset': 200
+        })
 
 
 def switchMessage(message):

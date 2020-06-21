@@ -2,4 +2,4 @@
 /__pycache>__/
 partials/__pycache__/
 
-dotenv*
+environment*

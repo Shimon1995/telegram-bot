@@ -1,7 +1,8 @@
 from pymongo import MongoClient
+from environment import MONGO_CLIENT
 
 
-client = MongoClient('localhost', 27017)
+client = MongoClient(MONGO_CLIENT)
 
 collection = client['todo']['todo']
 
